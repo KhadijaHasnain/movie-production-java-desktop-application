@@ -1,0 +1,91 @@
+-- ProductionCompany table
+CREATE TABLE production_company_table (
+    company_id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255),
+    address VARCHAR(255),
+    zip_code VARCHAR(10),
+    city VARCHAR(255),
+    nation VARCHAR(255),
+    organization_type VARCHAR(255),
+    employee_count VARCHAR(10),
+    net_value VARCHAR(255),
+    registration_date VARCHAR(20)
+);
+
+-- Employee table
+CREATE TABLE employee_table (
+    employee_id SERIAL PRIMARY KEY,
+    company_id VARCHAR(255) REFERENCES production_company_table(company_id),
+    employee_type VARCHAR(50) CHECK (employee_type IN ('Crew', 'Staff')),
+    first_name VARCHAR(255),
+    middle_name VARCHAR(255),
+    last_name VARCHAR(255),
+    dob DATE,
+    start_date DATE,
+    email_address VARCHAR(255),
+    contact_number VARCHAR(15),
+    UNIQUE (company_id, employee_id)
+);
+
+-- Grant table
+CREATE TABLE grant_table (
+    grant_id SERIAL PRIMARY KEY,
+    company_id VARCHAR(255) REFERENCES production_company_table(company_id),
+    title VARCHAR(255),
+    funding_organization VARCHAR(255),
+    max_value INT CHECK (max_value >= 0),
+    deadline DATE, 
+    application_date DATE,
+    desire_amount INT CHECK (desire_amount >= 0),
+    UNIQUE (company_id, grant_id)
+);
+
+-- Staff table
+CREATE TABLE staff_table (
+    staff_id VARCHAR(255) PRIMARY KEY,
+    employee_id VARCHAR(255) REFERENCES employee_table(employee_id),
+    department VARCHAR(255),
+    monthly_wage VARCHAR(255),
+    working_hours VARCHAR(255),
+    building VARCHAR(255),
+    address VARCHAR(255),
+    CHECK (monthly_wage >= 0),
+    UNIQUE (employee_id)
+);
+
+-- Stakeholder table
+CREATE TABLE stakeholder_table (
+    company_id VARCHAR(255) REFERENCES production_company_table(company_id),
+    stakeholder_id VARCHAR(255),
+    place_of_birth VARCHAR(255),
+    mother_name VARCHAR(255),
+    father_name VARCHAR(255),
+    phone_number VARCHAR(255),
+    insurance_number VARCHAR(255),
+    passport_number VARCHAR(255),
+    PRIMARY KEY (company_id, stakeholder_id),
+    UNIQUE (stakeholder_id)
+);
+
+-- Movie table
+CREATE TABLE movie_table (
+    movie_id VARCHAR(255) PRIMARY KEY,
+    company_id VARCHAR(255) REFERENCES production_company_table(company_id),
+    movie_code VARCHAR(255),
+    title VARCHAR(255),
+    release_year VARCHAR(255),
+    release_date VARCHAR(255),
+    protagonist VARCHAR(255),
+    UNIQUE (company_id, movie_id)
+);
+
+-- Crew table
+CREATE TABLE crew_table (
+    crew_id VARCHAR(255) PRIMARY KEY,
+    movie_id VARCHAR(255) REFERENCES movie_table(movie_id),
+    employee_id VARCHAR(255) REFERENCES employee_table(employee_id),
+    role_description VARCHAR(255),
+    UNIQUE (movie_id, employee_id)
+);
+
+select * from crew_table;

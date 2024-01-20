@@ -1,0 +1,228 @@
+-- Create ProductionCompany table
+CREATE TABLE production_company_table (
+    company_id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255),
+    address VARCHAR(255),
+    zip_code VARCHAR(10),
+    city VARCHAR(255),
+    nation VARCHAR(255),
+    organization_type VARCHAR(255),
+    employee_count VARCHAR(10),
+    net_value VARCHAR(255),
+    registration_date VARCHAR(20)
+);
+
+-- Create Employee table
+CREATE TABLE employee_table (
+    employee_id SERIAL PRIMARY KEY,
+    FOREIGN KEY (company_id) REFERENCES ProductionCompany(company_id),
+    employee_type VARCHAR(50),
+    first_name VARCHAR(255),
+    middle_name VARCHAR(255),
+    last_name VARCHAR(255),
+    dob DATE,
+    start_date DATE,
+    email_address VARCHAR(255),
+    contact_number VARCHAR(15)
+);
+
+-- Create Grant table
+CREATE TABLE grant_table (
+    grant_id SERIAL PRIMARY KEY,
+    FOREIGN KEY (company_id) REFERENCES ProductionCompany(company_id),
+    title VARCHAR(255),
+    funding_organization VARCHAR(255),
+    max_value INT,
+    deadline DATE, 
+    application_date DATE,
+    desire_amount INT
+);
+
+CREATE TABLE staff_table (
+    staff_id VARCHAR(255) PRIMARY KEY,
+    FOREIGN KEY (employee_id) REFERENCES employee_table(employee_id),
+    department VARCHAR(255),
+    monthly_wage VARCHAR(255),
+    working_hours VARCHAR(255),
+    building VARCHAR(255),
+    address VARCHAR(255)
+);
+
+CREATE TABLE stakeholder_table (
+    FOREIGN KEY (company_id) REFERENCES ProductionCompany(company_id),
+    stakeholder_id VARCHAR(255),
+    place_of_birth VARCHAR(255),
+    mother_name VARCHAR(255),
+    father_name VARCHAR(255),
+    phone_number VARCHAR(255),
+    insurance_number VARCHAR(255),
+    passport_number VARCHAR(255),
+    PRIMARY KEY (company_id, stakeholder_id)
+);
+
+CREATE TABLE movie_table (
+    movie_id VARCHAR(255) PRIMARY KEY,
+    FOREIGN KEY (company_id) REFERENCES ProductionCompany(company_id),
+    movie_code VARCHAR(255),
+    title VARCHAR(255),
+    release_year VARCHAR(255),
+    release_date VARCHAR(255),
+    protagonist VARCHAR(255)
+);
+
+-- Create Crew table
+CREATE TABLE crew_table (
+    crew_id VARCHAR(255) PRIMARY KEY,
+    hour INT , wages INT,
+    FOREIGN KEY (movie_id) REFERENCES movie_table(movie_id),
+    FOREIGN KEY (employee_id) REFERENCES employee_table(employee_id),
+    role_description VARCHAR(255)
+);
+
+-- Add Operations:
+
+-- Insert a new Production Company
+INSERT INTO production_company_table (company_id, name, address, zip_code, city, nation, organization_type, employee_count, net_value, registration_date)
+VALUES ('NEW789', 'New Production Company', 'New Address', '12345', 'New City', 'New Nation', 'Private', '50', '500000', '2023-01-01');
+
+-- Insert a new Employee
+INSERT INTO employee_table (company_id, employee_type, first_name, middle_name, last_name, dob, start_date, email_address, contact_number)
+VALUES ('ABC456', 'Actor', 'John', 'M.', 'Doe', '1990-05-15', '2022-01-10', 'john.doe@example.com', '+9876543210');
+
+-- Insert a new Grant
+INSERT INTO grant_table (company_id, title, funding_organization, max_value, deadline, application_date, desire_amount)
+VALUES ('ABC456', 'New Project Grant', 'Foundation XYZ', 75000, '2023-06-30', '2023-03-01', 50000);
+
+-- Insert a new Movie
+INSERT INTO movie_table (movie_id, company_id, movie_code, title, release_year, release_date, protagonist)
+VALUES ('MOV789', 'ABC456', 'M123', 'New Movie', '2023', '2023-07-15', 'Actor A');
+
+-- Insert a new Crew Member
+INSERT INTO crew_table (crew_id, movie_id, employee_id, role_description)
+VALUES ('CREW456', 'MOV789', '2', 'Director');
+
+-- Update Operations:
+
+-- Update Production Company's Address
+UPDATE production_company_table
+SET address = 'New Address'
+WHERE company_id = 'XYZ123';
+
+-- Update Production Company's Net Value
+UPDATE production_company_table
+SET net_value = '1000000'
+WHERE company_id = 'ABC456';
+
+-- Update Employee's Email Address
+UPDATE employee_table
+SET email_address = 'new_email@example.com'
+WHERE employee_id = 1;
+
+-- Update Employee's Contact Number
+UPDATE employee_table
+SET contact_number = '+1234567890'
+WHERE employee_id = 2;
+
+-- Update Grant's Max Value
+UPDATE grant_table
+SET max_value = 50000
+WHERE grant_id = 1;
+
+-- Update Grant's Funding Organization
+UPDATE grant_table
+SET funding_organization = 'New Foundation'
+WHERE grant_id = 2;
+
+-- Delete Operations:
+
+-- Delete Production Company and associated data
+DELETE FROM production_company_table
+WHERE company_id = 'XYZ123';
+
+-- Delete Employee and associated data
+DELETE FROM employee_table
+WHERE employee_id = 1;
+
+-- Delete Grant
+DELETE FROM grant_table
+WHERE grant_id = 1;
+
+Retrieve Production Companies' Information:
+
+Get a list of all production companies in the European region:
+
+SELECT * FROM production_company_table WHERE nation = 'Europe';
+
+
+Retrieve specific details for a given production company:
+
+SELECT name, address, zip_code, city, nation, organization_type, employee_count, net_value
+FROM production_company_table
+WHERE company_id = 'your_company_id';
+
+
+ Retrieve Shareholder Information:
+
+ Obtain a list of shareholders for a particular production company:
+
+SELECT * FROM stakeholder_table WHERE company_id = 'your_company_id';
+
+
+Retrieve details of a specific shareholder:
+
+SELECT place_of_birth, mother_name, father_name, phone_number, insurance_number, passport_number
+FROM stakeholder_table
+WHERE company_id = 'your_company_id' AND stakeholder_id = 'your_stakeholder_id';
+
+Retrieve Employee Information:
+
+Get a list of all employees working for a specific production company:
+
+SELECT * FROM employee_table WHERE company_id = 'your_company_id';
+
+Retrieve details of a specific employee:
+
+SELECT employee_id, employee_type, first_name, middle_name, last_name, dob, start_date, email_address, contact_number
+FROM employee_table
+WHERE employee_id = 'your_employee_id';
+
+
+Retrieve Compensation Information:
+
+Retrieve compensation details for crew members:
+
+SELECT crew_id, hour, wages, role_description
+FROM crew_table
+WHERE employee_id = 'your_crew_employee_id';
+
+Obtain compensation details for staff members:
+
+SELECT staff_id, monthly_wage, working_hours, department
+FROM staff_table
+WHERE employee_id = 'your_staff_employee_id';
+
+Retrieve Film Information:
+
+Get a list of all films produced by a particular production company:
+
+SELECT * FROM movie_table WHERE company_id = 'your_company_id';
+
+Retrieve details of a specific film:
+
+SELECT movie_code, title, release_year, release_date, protagonist
+FROM movie_table
+WHERE movie_id = 'your_movie_id';
+
+Grant Information:
+
+Retrieve a list of grants received by production companies:
+
+SELECT * FROM grant_table WHERE company_id = 'your_company_id';
+
+Obtain details of a specific grant application:
+
+SELECT title, funding_organization, max_value, deadline, application_date, desire_amount
+FROM grant_table
+WHERE grant_id = 'your_grant_id';
+
+
